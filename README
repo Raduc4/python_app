@@ -1,0 +1,30 @@
+- data_ingresor.py
+
+In urma cerintelor de la route am dedus faptul ca rezultatele pot fi impartite in 4 categorii:
+    * average - pentru intrebarile carte necesita media valorilor 
+    * top5 - categorie pentru best/worst 5
+    * diff - care face diferenta intre global average si valorile medii
+    * average_by_category - care include categoriile din StratificationCategory1 in statistica
+
+In functie de parametrii dati functiilor mai sus mentionate, comportamentuil este adecvat cererii facute.
+
+- task_runner.py
+
+Clasa ThreadPool preia numarul de thread-uri din varibaila de mediu sau numarul de procesoare disponibile
+Are la dispozitie cele 2 componente necesare unui ThreadPool:
+    * coada de task-uri
+    * lista de workeri: fiecare wrorker face urmatoarele actiuni pana cand este oprit:
+                            * preia un task din coada (daca nu exista task-uri de preluat, atunci thread-ul va fi in loop)
+                            * pune intr-un fisier cu numele id-ul task-ului statusul de running
+                            * rezolva task-ul
+                            * pune intr-un fisier cu numele id-ul task-ului statusul de done si rezultatul prelucrarii
+
+- routes.py
+
+Exista 2 tipuri de request-uri:
+    1. care verifica statusul unui/unor task-uri:
+        * Acestea verifica existenta unui fisier cu numele id-ului cerut si vede statusul de acolo
+        * Acestea iterezeaza prin fisierele din app/result si preia statusul fiecarui task
+    2. care adauga task-uri in ThreadPool
+        * Acestea apeleza functia send_request() careia ii da datele necesare pentru request
+        * send_request() preia datele, ia si incrementeaza job_id ul global si adauga un JSON care reprezionta task-ul in ThreadPool si returneaza job_id-ul
